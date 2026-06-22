@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HYBRID RACE TRAINING · Draft</title>
+<style>
+  /* ============================================================
+     CHARTE PSD HYBRID RACE TRAINING (utilise bg_hybrid.png)
+     - Background = le template TV PSD exporté en PNG
+     - Bandeau jaune + watermark + logo viennent du PNG
+     - Tous les éléments interactifs sont superposés au centre
+     ============================================================ */
+  :root {
+    --jlh-yellow: #DCC436;
+    --jlh-yellow-bright: #F0D540;
+    --jlh-blue: #156DB1;
+    --jlh-blue-light: #2A8FD8;
+    --jlh-red: #E03B26;
+    --text: #ffffff;
+    --text-dim: #b8c0c8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+  body {
+    font-family: "Avenir Next", "Helvetica Neue", -apple-system, sans-serif;
+    background-image: url("bg_hybrid.png");
+    background-size: cover;
+    background-position: center;
+    background-color: #0a0a0a;
+    color: var(--text);
+    position: relative;
+  }
+
+  /* Layer overlay pour foncer la zone centrale du watermark (rendre plus lisible) */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 8% 8% 12% 8%;  /* évite top banner et bottom-right logo */
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ============================================================
+     CONTENT — zone centrale uniquement
+     ============================================================ */
+  main {
+    position: absolute;
+    /* Réserve : top banner ~6vh, bottom-right logo ~10vh */
+    top: 8vh;
+    bottom: 12vh;
+    left: 3vw;
+    right: 3vw;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tagline {
+    text-align: center;
+    font-size: 1.7vh;
+    color: var(--jlh-yellow);
+    letter-spacing: 0.5vw;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 1vh;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
+  .format-info {
+    text-align: center;
+    margin-bottom: 1.5vh;
+    display: flex;
+    gap: 2vw;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 2vh;
+  }
+  .format-info .pill {
+    background: rgba(10, 10, 10, 0.7);
+    border: 2px solid var(--jlh-blue-light);
+    border-radius: 0.8vh;
+    padding: 0.7vh 1.5vw;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.1vw;
+    backdrop-filter: blur(4px);
+  }
+  .format-info .pill.yellow { border-color: var(--jlh-yellow); }
+  .format-info .pill .label {
+    font-size: 1.1vh;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.2vw;
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.2vh;
+  }
+  .format-info .pill .value {
+    color: white;
+    font-weight: 900;
+    font-size: 2.2vh;
+  }
+  .format-info .pill.yellow .value { color: var(--jlh-yellow); }
+
+  /* MODES */
+  .mode-bar {
+    display: flex;
+    gap: 0.8vw;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5vh;
+    flex-shrink: 0;
+  }
+  .mode-btn {
+    background: rgba(10,10,10,0.7);
+    color: var(--text-dim);
+    border: 2px solid rgba(220, 196, 54, 0.35);
+    padding: 1vh 1.8vw;
+    border-radius: 0.8vh;
+    font-size: 1.6vh;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.1vw;
+    font-family: inherit;
+    backdrop-filter: blur(4px);
+  }
+  .mode-btn.active {
+    background: var(--jlh-yellow);
+    color: #0a0a0a;
+    border-color: var(--jlh-yellow);
+    box-shadow: 0 0 1.5vh rgba(220, 196, 54, 0.6);
+  }
+  .mode-btn:hover:not(.active) {
+    background: rgba(220, 196, 54, 0.2);
+    color: white;
+    border-color: var(--jlh-yellow);
+  }
+
+  /* DRAW BUTTON */
+  .draw-btn {
+    display: block;
+    margin: 0 auto 1.5vh;
+    padding: 1.6vh 4vw;
+    background: linear-gradient(135deg, var(--jlh-yellow-bright) 0%, var(--jlh-yellow) 100%);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 1.2vh;
+    font-size: 2.4vh;
+    font-weight: 900;
+    letter-spacing: 0.3vw;
+    cursor: pointer;
+    box-shadow: 0 0.6vh 1.6vh rgba(220, 196, 54, 0.5),
+                0 0 4vh rgba(0,0,0,0.5);
+    transition: transform 0.1s;
+    text-transform: uppercase;
+    font-family: inherit;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  .draw-btn:active { transform: scale(0.97); }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0.6vh 1.6vh rgba(220, 196, 54, 0.5), 0 0 4vh rgba(0,0,0,0.5); }
+    50%      { box-shadow: 0 0.6vh 2.4vh rgba(220, 196, 54, 0.9), 0 0 4vh rgba(0,0,0,0.5); }
+  }
+
+  /* STATIONS GRID */
+  .stations-wrap {
+    flex: 1;
+    overflow: hidden;
+    padding-top: 0.5vh;
+  }
+  .stations-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 1vh 0.8vw;
+    height: 100%;
+  }
+  .station-card {
+    background: rgba(10, 10, 10, 0.75);
+    border: 2px solid rgba(220, 196, 54, 0.2);
+    border-radius: 1vh;
+    padding: 1.2vh 0.8vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    transition: all 0.4s ease-out;
+    backdrop-filter: blur(2px);
+  }
+  .station-card.drawn {
+    background: linear-gradient(135deg, rgba(21, 109, 177, 0.85) 0%, rgba(21, 109, 177, 0.6) 100%);
+    border-color: var(--jlh-blue-light);
+    box-shadow: 0 0 2vh rgba(21, 109, 177, 0.5);
+  }
+  .station-card.drawn::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 0.3vh;
+    background: linear-gradient(90deg, var(--jlh-blue), var(--jlh-blue-light));
+  }
+  .station-number {
+    font-size: 1.2vh;
+    color: var(--jlh-blue-light);
+    letter-spacing: 0.2vw;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.6vh;
+  }
+  .station-name {
+    font-size: 2.2vh;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6vh;
+    color: white;
+  }
+  .station-detail {
+    font-size: 1.3vh;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.3;
+  }
+  .station-card .question {
+    font-size: 7vh;
+    color: rgba(220, 196, 54, 0.15);
+    font-weight: 900;
+  }
+
+  /* Card COURSE — couleur jaune accent */
+  .run-card { background: rgba(10, 10, 10, 0.75); border-color: rgba(220, 196, 54, 0.4); }
+  .run-card.drawn {
+    background: linear-gradient(135deg, rgba(220, 196, 54, 0.95) 0%, rgba(220, 196, 54, 0.75) 100%);
+    border-color: var(--jlh-yellow);
+    box-shadow: 0 0 2vh rgba(220, 196, 54, 0.5);
+    color: #0a0a0a;
+  }
+  /* Pas de barre ::before sur les cartes COURSE (évite la bande noire) */
+  .run-card.drawn::before { display: none; }
+  .run-card.drawn .station-name { color: #0a0a0a; }
+  .run-card.drawn .station-number { color: rgba(10,10,10,0.7); }
+  .run-card.drawn .station-detail { color: rgba(10,10,10,0.7); }
+
+  /* ANIMATIONS */
+  @keyframes flipReveal {
+    0% { transform: scale(0.8) rotateY(0deg); opacity: 0; }
+    50% { transform: scale(1.05) rotateY(90deg); opacity: 0.5; }
+    100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+  }
+  .flip { animation: flipReveal 0.6s ease-out forwards; }
+
+  /* ============================================================
+     SOUS-BAR (mode Course Rapide) — niveaux + nb rounds
+     ============================================================ */
+  .sub-bar {
+    display: flex;
+    gap: 2vw;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5vh;
+    padding: 1.2vh 1vw;
+    background: rgba(10, 10, 10, 0.7);
+    border: 2px solid rgba(220, 196, 54, 0.3);
+    border-radius: 1vh;
+    backdrop-filter: blur(4px);
+  }
+  .sub-group { display: flex; align-items: center; gap: 0.6vw; }
+  .sub-label {
+    font-size: 1.4vh;
+    color: var(--jlh-yellow);
+    text-transform: uppercase;
+    letter-spacing: 0.2vw;
+    font-weight: 700;
+  }
+  .sub-btn, .sub-btn-r, .sub-btn-m {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dim);
+    border: 2px solid rgba(220, 196, 54, 0.25);
+    padding: 0.6vh 1.2vw;
+    border-radius: 0.6vh;
+    font-size: 1.5vh;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .sub-btn-r { padding: 0.6vh 1vw; min-width: 4vw; }
+  .sub-btn.active, .sub-btn-r.active, .sub-btn-m.active {
+    background: var(--jlh-yellow);
+    color: #0a0a0a;
+    border-color: var(--jlh-yellow);
+  }
+
+  /* === Dropdown pour les cartes AMRAP en mode manuel === */
+  .amrap-select {
+    width: 100%;
+    background: rgba(10, 10, 10, 0.85);
+    color: var(--jlh-yellow);
+    border: 2px solid var(--jlh-yellow);
+    border-radius: 0.6vh;
+    padding: 0.6vh 0.8vw;
+    font-size: 1.6vh;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 0.5vh;
+    text-align: center;
+    text-align-last: center;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23DCC436'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5vw center;
+    background-size: 2.5vh;
+    padding-right: 3vw;
+  }
+  .amrap-select:focus { outline: 2px solid var(--jlh-yellow-bright); }
+  .amrap-select option { background: #1a1a1a; color: white; font-weight: 600; }
+  .amrap-select optgroup { background: #0a0a0a; color: var(--jlh-yellow); font-style: italic; }
+  .station-card.manual { background: rgba(10, 10, 10, 0.75); border-color: var(--jlh-yellow); }
+  .station-card.manual .station-detail {
+    color: var(--text-dim);
+    font-size: 1.4vh;
+    min-height: 3vh;
+  }
+
+  /* ============================================================
+     TIMER OVERLAY plein écran
+     ============================================================ */
+  .timer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4vh 4vw;
+  }
+  .timer-overlay.show { display: flex; }
+  .timer-close {
+    position: absolute;
+    top: 2vh;
+    right: 2vw;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    font-size: 2.5vh;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .timer-round-info {
+    font-size: 3vh;
+    color: var(--jlh-yellow);
+    text-transform: uppercase;
+    letter-spacing: 0.4vw;
+    font-weight: 800;
+    margin-bottom: 1vh;
+  }
+  .timer-phase {
+    font-size: 9vh;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 1vw;
+    margin-bottom: 1vh;
+    text-shadow: 0 0 4vh currentColor;
+    transition: color 0.3s;
+  }
+  .timer-phase.course { color: var(--jlh-yellow); }
+  .timer-phase.rest { color: #ff8c42; }
+  .timer-phase.amrap { color: var(--jlh-blue-light); }
+  .timer-phase.done { color: #4ade80; }
+  .timer-station {
+    font-size: 4vh;
+    font-weight: 700;
+    color: var(--jlh-blue-light);
+    margin-bottom: 2vh;
+    text-align: center;
+    min-height: 5vh;
+  }
+  .timer-station-detail {
+    font-size: 2vh;
+    color: var(--text-dim);
+    margin-top: 0.5vh;
+  }
+  .timer-countdown {
+    font-size: 22vh;
+    font-weight: 900;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: white;
+    text-shadow: 0 0 5vh rgba(220, 196, 54, 0.4);
+    margin-bottom: 2vh;
+  }
+  .timer-countdown.warning { color: var(--jlh-yellow); }
+  .timer-countdown.danger { color: #ff4d4d; animation: blink 0.5s infinite; }
+  @keyframes blink { 50% { opacity: 0.5; } }
+  .timer-controls {
+    display: flex;
+    gap: 1.5vw;
+    margin-top: 2vh;
+  }
+  .timer-btn {
+    background: var(--jlh-yellow);
+    color: #0a0a0a;
+    border: none;
+    padding: 1.5vh 3vw;
+    border-radius: 1vh;
+    font-size: 2.2vh;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.2vw;
+  }
+  .timer-btn.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+
+  /* RESPONSIVE iPad portrait */
+  @media (max-aspect-ratio: 1/1) {
+    main { top: 6vh; bottom: 9vh; }
+    .stations-grid { grid-template-columns: repeat(2, 1fr); }
+    .station-name { font-size: 1.8vh; }
+    .timer-countdown { font-size: 18vh; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Le bandeau "HYBRID RACE TRAINING", le watermark JLH central
+       et le logo "JLH SPORT SANTÉ" en bas à droite proviennent
+       directement du PNG background (charte PSD exacte) -->
+
+  <main>
+    <div class="tagline">DRAFT · Tirage au sort des stations</div>
+
+    <div class="mode-bar">
+      <button class="mode-btn active" data-mode="half">6 stations</button>
+      <button class="mode-btn" data-mode="surprise">Surprise · 5</button>
+      <button class="mode-btn" data-mode="quickrun-manual">🏃 Course Rapide Manuelle</button>
+      <button class="mode-btn" data-mode="quickrun">🏃 Course Rapide PDC</button>
+    </div>
+
+    <!-- Sous-bar visible UNIQUEMENT en mode quickrun (PDC) -->
+    <div class="sub-bar" id="quickrunOpts" style="display:none;">
+      <div class="sub-group">
+        <span class="sub-label">Niveau :</span>
+        <button class="sub-btn active" data-level="pro">PRO · 1000m</button>
+        <button class="sub-btn" data-level="open">OPEN · 800m</button>
+        <button class="sub-btn" data-level="rookie">ROOKIE · 400m</button>
+      </div>
+      <div class="sub-group">
+        <span class="sub-label">Rounds :</span>
+        <button class="sub-btn-r" data-rounds="5">5</button>
+        <button class="sub-btn-r active" data-rounds="6">6</button>
+        <button class="sub-btn-r" data-rounds="7">7</button>
+        <button class="sub-btn-r" data-rounds="8">8</button>
+      </div>
+    </div>
+
+    <!-- Sous-bar visible UNIQUEMENT en mode quickrun-manual (6 rounds forcés) -->
+    <div class="sub-bar" id="quickrunManualOpts" style="display:none;">
+      <div class="sub-group">
+        <span class="sub-label">Niveau :</span>
+        <button class="sub-btn-m active" data-level="pro">PRO · 1000m</button>
+        <button class="sub-btn-m" data-level="open">OPEN · 800m</button>
+        <button class="sub-btn-m" data-level="rookie">ROOKIE · 400m</button>
+      </div>
+      <div class="sub-group">
+        <span class="sub-label" style="color:var(--jlh-yellow);">⚙️ 6 rounds · choisir manuellement chaque AMRAP</span>
+      </div>
+    </div>
+
+    <div class="format-info" id="formatInfo">
+      <div class="pill"><span class="label">Format</span><span class="value" id="fmt">FOR TIME</span></div>
+      <div class="pill yellow"><span class="label">Durée totale</span><span class="value" id="dur">~25'</span></div>
+      <div class="pill"><span class="label">Athlètes / station</span><span class="value" id="grp">4-5</span></div>
+    </div>
+
+    <div style="display:flex; gap:1vw; justify-content:center; flex-wrap:wrap; align-items:center;">
+      <button class="draw-btn" id="mainBtn" onclick="draw()">🎲 Tirer au sort</button>
+      <button class="draw-btn" id="launchTimerBtn" style="display:none; background:var(--jlh-red); border-color:var(--jlh-red);">
+        🚀 Lancer le timer
+      </button>
+      <button onclick="testSound()" style="background:rgba(10,10,10,0.7); color:white; border:2px solid var(--jlh-yellow); border-radius:0.8vh; padding:1vh 1.5vw; font-size:1.6vh; font-weight:700; cursor:pointer; letter-spacing:0.1vw;">
+        🔊 Test son
+      </button>
+    </div>
+
+    <div class="stations-wrap">
+      <div class="stations-grid" id="stations"></div>
+    </div>
+  </main>
+
+  <!-- TIMER OVERLAY -->
+  <div class="timer-overlay" id="timerOverlay">
+    <button class="timer-close" onclick="closeTimer()">✕</button>
+    <div class="timer-round-info" id="timerRoundInfo">Round 1 / 6</div>
+    <div class="timer-phase" id="timerPhase">COURSE</div>
+    <div class="timer-station" id="timerStation">1000m Run</div>
+    <div class="timer-countdown" id="timerCountdown">4:00</div>
+    <div class="timer-controls">
+      <button class="timer-btn" id="timerPlayBtn" onclick="togglePlay()">▶ START</button>
+      <button class="timer-btn secondary" onclick="skipPhase()">⏭ Skip</button>
+      <button class="timer-btn secondary" onclick="resetTimer()">↻ Reset</button>
+    </div>
+  </div>
+
+<script>
+  // Pour chaque station :
+  //   name     = utilisé sur les cartes (avec distance/quantité)
+  //   movement = utilisé en mode Course Rapide AMRAP (sans quantité)
+  //   detail   = charges Pro / Open / Rookie selon standards JLH Hybrid Race
+  //
+  // ⚠️ Distances / charges issues du standard officiel JLH Hybrid Race
+  //    organisé le 27/06/2026 — 8 épreuves officielles + 4 bonus JLH
+  // Pour chaque station :
+  //   name     = utilisé sur les cartes (avec distance/quantité)
+  //   movement = utilisé en mode Course Rapide AMRAP (sans quantité)
+  //   detail   = charges Pro / Open / Rookie selon standards JLH Hybrid Race
+  //
+  // ⚠️ Distances / charges issues du standard officiel JLH Hybrid Race
+  //    organisé le 27/06/2026 — 8 épreuves officielles
+  //    Charges Sled Push & Pull = même charge Push + Pull dans la même station
+  //    Format : H/F (Hommes / Femmes)
+  const HYROX_STATIONS = [
+    // ===== 8 ÉPREUVES OFFICIELLES JLH HYBRID RACE =====
+    { name: "SkiErg",
+      movement: "SkiErg",
+      detail: "Pro/Open 1000m · Rookie 600m" },
+    { name: "Sled Push & Pull 60m",
+      movement: "Sled Push & Pull",
+      detail: "Pro 175/125 · Open 125/90 · Rookie 90/60 kg | 60m (40m Rookie)" },
+    { name: "Burpee Broad Jumps 80m",
+      movement: "Burpee Broad Jumps",
+      detail: "80m continus (tous niveaux)" },
+    { name: "Rameur",
+      movement: "Rameur",
+      detail: "Pro/Open 1000m · Rookie 600m" },
+    { name: "Farmers Carry 200m",
+      movement: "Farmers Carry",
+      detail: "Pro 2×32/24 · Open 2×24/16 · Rookie 2×16/12 kg | 200m" },
+    { name: "Sandbag Lunges 100m",
+      movement: "Sandbag Lunges",
+      detail: "Pro 30/20 · Open 20/10 · Rookie DB 10/5 kg | 100m" },
+    { name: "BikeErg",
+      movement: "BikeErg",
+      detail: "Pro/Open 2000m · Rookie 1200m" },
+    { name: "Wall Balls",
+      movement: "Wall Balls",
+      detail: "Pro 9/6 · Open 6/3 (100 reps) · Rookie 6/3 (60 reps) kg" },
+    // ===== STATIONS BONUS JLH (hors compétition officielle) =====
+    // ----- Variantes de fentes pour simuler les Sandbag Lunges -----
+    { name: "BB Front Rack Lunges 100m",
+      movement: "BB Front Rack Lunges",
+      detail: "Pro 50/35 · Open 40/25 · Rookie 30/20 kg | 100m" },
+    { name: "DB Walking Lunges 100m",
+      movement: "DB Walking Lunges",
+      detail: "Pro 2×22,5/15 · Open 2×15/10 · Rookie 2×10/5 kg | 100m" },
+    { name: "OH Plate Walking Lunges 100m",
+      movement: "OH Plate Lunges",
+      detail: "Pro 20/15 · Open 15/10 · Rookie 10/5 kg | 100m" },
+    // ----- Box / Plyo -----
+    { name: "30 Burpees Box J. O.", movement: "Burpees Box J.O.", detail: "Pro 24/20 · Open 20/16 · Rookie 16/12''" },
+    { name: "40 Box Jumps",         movement: "Box Jumps",        detail: "Pro 30/24 · Open 24/20 · Rookie 20/16''" },
+    { name: "50 Box Step Ups",      movement: "Box Step Ups",     detail: "Pro 24/20 · Open 20/16'' (lestés DB/KB)" },
+    // ----- Kettlebells / Haltères -----
+    { name: "50 KB Swings",         movement: "KB Swings",        detail: "Pro 24/16 · Open 16/12 · Rookie 12/8 kg" },
+    { name: "40 KB Goblet Squats",  movement: "KB Goblet Squats", detail: "Pro 24/16 · Open 16/12 · Rookie 12/8 kg" },
+    { name: "60 KB Snatch alt.",    movement: "KB Snatch",        detail: "Pro 24/16 · Open 16/12 · Rookie 12/8 kg" },
+    { name: "30 DB Devil Press",    movement: "DB Devil Press",   detail: "Pro 2×22,5/15 · Open 2×15/10 · Rookie 2×10/5 kg" },
+    { name: "40 DB Snatch alt.",    movement: "DB Snatch alt.",   detail: "Pro 22,5/15 · Open 15/10 · Rookie 10/5 kg" },
+    { name: "30 Thrusters",         movement: "Thrusters",        detail: "Pro 50/35 · Open 40/25 · Rookie 30/20 kg" },
+    { name: "30 Power Cleans",      movement: "Power Cleans",     detail: "Pro 60/40 · Open 50/30 · Rookie 40/25 kg" },
+    { name: "30 Deadlifts",         movement: "Deadlifts",        detail: "Pro 100/70 · Open 80/55 · Rookie 60/40 kg" },
+    { name: "50 Weighted Box Step Ups", movement: "Weighted Box Step Ups", detail: "Sandbag / KB / DB / BB / MB · Pro 24/20 · Open 20/16''" },
+    // ----- Barre fixe / Anneaux -----
+    { name: "10 Rope Climbs",       movement: "Rope Climbs",      detail: "ou Strict Pull Ups" },
+    { name: "50 Pull Ups",          movement: "Pull Ups",         detail: "Pro strict · Open kipping · Rookie bandes" },
+    { name: "40 Toes To Bar",       movement: "Toes To Bar",      detail: "Pro T2B · Open knees-to-chest · Rookie knee-raises" },
+    { name: "30 Chest To Bar",      movement: "Chest To Bar",     detail: "Pro C2B · Open pull-ups · Rookie ring-rows" },
+    // ----- Core -----
+    { name: "100 V-ups",            movement: "V-ups",            detail: "Core check" },
+    { name: "100 AbMat Sit Ups",    movement: "AbMat Sit Ups",    detail: "Toucher le sol derrière la tête puis devant les pieds" },
+    { name: "60 Hollow Rocks",      movement: "Hollow Rocks",     detail: "Garder bas du dos collé au sol" },
+    { name: "50 Russian Twists",    movement: "Russian Twists",   detail: "Pro 10/8 · Open 8/6 · Rookie 6/4 kg | tap/tap=1" },
+    // ----- Cardio / poids de corps -----
+    { name: "60 Burpees",           movement: "Burpees",          detail: "Poitrine au sol + saut debout + clap mains derrière la tête" },
+    { name: "100 Air Squats",       movement: "Air Squats",       detail: "Hanches < genoux" },
+    { name: "60 Push Ups",          movement: "Push Ups",         detail: "Pro stricts · Open genoux · Rookie incl." },
+    { name: "80 Mountain Climbers", movement: "Mountain Climbers",detail: "Compte = chaque genou × 2" },
+    { name: "100 DU / 300 SU",      movement: "Double Unders",    detail: "Pro 100 DU · Open 50 DU · Rookie 300 SU" },
+    { name: "30 Wall Walks",        movement: "Wall Walks",       detail: "Mains à la marque · poitrine au mur" },
+    { name: "20 HSPU",              movement: "Handstand PU",     detail: "Pro stricts · Open kipping · Rookie pike PU" },
+    { name: "20 Muscle Ups",        movement: "Muscle Ups",       detail: "Pro RMU/BMU · Open jumping MU · Rookie pull ups + dips" },
+    { name: "300 Single Unders",    movement: "Single Unders",    detail: "Sauts simples à la corde · 300 reps continus" },
+    { name: "200 SU Cross Overs",   movement: "SU Cross Overs",   detail: "Single Unders avec croisement de bras · 200 reps" },
+  ];
+  const RUN_DISTANCES = [
+    { name: "200m Run",  detail: "Sprint warm-up" },
+    { name: "400m Run",  detail: "1 tour Ifs" },
+    { name: "800m Run",  detail: "2 tours" },
+    { name: "1000m Run", detail: "Standard Hyrox" },
+  ];
+  // Modes avec format/durée/groupe estimés
+  // (calcul athlètes/station basé sur 18 élèves)
+  // Pour "half" (6 stations) : format dynamique selon présence d'erg dans le tirage
+  // Pour "full-solo" : EMOM intervalle individuel
+  // Pour "full-team" : You go / I go par paires
+  // Athlètes/station calibrés pour max 20 élèves par séance :
+  //   4 stations × 5 athlètes = 20
+  //   5 stations × 4 athlètes = 20
+  //   6/7/8 stations × 3 athlètes = max 24 (3 par station)
+  //   8 TEAM × 2 paires de 2 = 16-20
+  const MODES = {
+    mini:      { stations: 4, runDist: "400m",  format: "FOR TIME",          duration: "~25'", group: "5"    },
+    half:      { stations: 6, runDist: "800m",  format: "FOR TIME / AMRAP",  duration: "40'",  group: "3"    },
+    "full-solo": { stations: 8, runDist: "1000m", format: "3'on / 1'off (8R)", duration: "32'",  group: "3"    },
+    "full-team": { stations: 8, runDist: "1000m", format: "2'on / 2'off (8R) · You go I go", duration: "32'",  group: "2 (paires)" },
+    surprise:  { stations: 5, runDist: "any",   format: "AMRAP 30'",         duration: "30'",  group: "4"    },
+  };
+  // ⚠️ Le mode "quickrun" (PDC) et "quickrun-manual" ont leur propre logique
+  //    — pas dans MODES car ils ne suivent pas le pattern station/run
+
+  // Pool unifié pour les dropdowns du mode MANUEL (toutes les options)
+  // L'utilisateur peut choisir n'importe quoi (poids de corps OU avec matériel)
+  // ⚠️ Les regex sont mutuellement exclusives — un exo n'apparaît que dans 1 seul groupe
+  function buildManualPool() {
+    // Exclusion explicite : "Weighted Box Step Ups" → Matériel (pas Gymnastique)
+    //                        bien que son nom contienne "Box Step"
+    const isMaterial = s => /KB |DB |Barbell|Thruster|Clean|Deadlift|Snatch|Devil|Wall Ball|Russian|Goblet|Lunge|BB |Weighted/i.test(s.name);
+    const isGym      = s => !isMaterial(s) && /Rope|Pull Ups|Toes To Bar|Chest To Bar|HSPU|Wall Walks|Box Jumps|Box Step|Double Unders|Muscle Ups|Single Unders|SU Cross/i.test(s.name);
+    const isCardio   = s => !isMaterial(s) && !isGym(s) && /SkiErg|BikeErg|Rameur|Burpee Broad|Sled|Farmers|Sandbag/i.test(s.name);
+    return [
+      { group: "🏋️ Poids de corps",              items: QUICKRUN_BODYWEIGHT },
+      { group: "💪 Avec matériel · KB/DB/Barre", items: HYROX_STATIONS.filter(isMaterial) },
+      { group: "🤸 Gymnastique",                 items: HYROX_STATIONS.filter(isGym) },
+      { group: "🏃 Cardio / Hyrox",              items: HYROX_STATIONS.filter(isCardio) },
+    ];
+  }
+  let currentMode = "half";
+
+  // Détecte si une station "erg" (Ski / Row) est dans les stations tirées
+  function hasErgStation(stations) {
+    return stations.some(s =>
+      /Ski|Row\b/i.test(s.name)
+    );
+  }
+
+  // Met à jour les pills format (appelé après tirage pour 6 stations = dynamique)
+  function updateFormatInfo(drawnStations) {
+    const cfg = MODES[currentMode];
+    if (!cfg) return;  // modes quickrun(-manual) ont leur propre updater
+    let format = cfg.format;
+    let duration = cfg.duration;
+
+    // Cas spécial 6 stations : format dépend des ergs tirés
+    if (currentMode === "half" && drawnStations) {
+      if (hasErgStation(drawnStations)) {
+        format = "FOR TIME";
+        duration = "~40'";
+      } else {
+        format = "AMRAP 40'";
+        duration = "40'";
+      }
+    } else if (currentMode === "half") {
+      format = "FOR TIME / AMRAP 40'";
+      duration = "40'";
+    }
+
+    document.getElementById("fmt").textContent = format;
+    document.getElementById("dur").textContent = duration;
+    document.getElementById("grp").textContent = cfg.group;
+  }
+
+  document.querySelectorAll(".mode-btn").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(".mode-btn").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      currentMode = b.dataset.mode;
+      updateFormatInfo();
+      reset();
+    };
+  });
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length-1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function pickRun(dist) {
+    if (dist === "any") return RUN_DISTANCES[Math.floor(Math.random()*RUN_DISTANCES.length)];
+    return RUN_DISTANCES.find(r => r.name.startsWith(dist)) || RUN_DISTANCES[1];
+  }
+  function setGridCols(total) {
+    const g = document.getElementById("stations");
+    if (total <= 4)       g.style.gridTemplateColumns = "repeat(2, 1fr)";
+    else if (total <= 8)  g.style.gridTemplateColumns = "repeat(4, 1fr)";
+    else if (total <= 12) g.style.gridTemplateColumns = "repeat(4, 1fr)";
+    else                  g.style.gridTemplateColumns = "repeat(5, 1fr)";
+  }
+  function reset() {
+    const cfg = MODES[currentMode];
+    if (!cfg) return;  // modes quickrun(-manual) gèrent leur propre layout
+    const grid = document.getElementById("stations");
+    grid.innerHTML = "";
+    const total = cfg.stations * 2;
+    setGridCols(total);
+    for (let i = 0; i < total; i++) {
+      const isRun = i % 2 === 0;
+      const c = document.createElement("div");
+      c.className = "station-card" + (isRun ? " run-card" : "");
+      c.innerHTML = '<div class="question">?</div>';
+      grid.appendChild(c);
+    }
+  }
+  function draw() {
+    const cfg = MODES[currentMode];
+    const stations = shuffle(HYROX_STATIONS).slice(0, cfg.stations);
+    const total = cfg.stations * 2;
+    const grid = document.getElementById("stations");
+    grid.innerHTML = "";
+    setGridCols(total);
+
+    // MAJ format dynamique (utile surtout pour 6 stations avec/sans erg)
+    updateFormatInfo(stations);
+
+    let sIdx = 0;
+    for (let i = 0; i < total; i++) {
+      const isRun = i % 2 === 0;
+      const c = document.createElement("div");
+      c.className = "station-card flip" + (isRun ? " run-card" : "");
+      const content = isRun ? pickRun(cfg.runDist) : stations[sIdx++];
+      setTimeout(() => {
+        c.classList.add("drawn");
+        c.innerHTML = `
+          <div class="station-number">${isRun ? "Course" : "Station"} ${Math.floor(i/2)+1}</div>
+          <div class="station-name">${content.name}</div>
+          <div class="station-detail">${content.detail}</div>`;
+      }, i * 120);
+      grid.appendChild(c);
+    }
+  }
+  updateFormatInfo();
+  reset();
+
+  // ============================================================
+  // MODE COURSE RAPIDE — niveaux Pro/Open/Rookie + Timer
+  // ============================================================
+  const QUICKRUN_LEVELS = {
+    pro:    { dist: "1000m", label: "PRO" },
+    open:   { dist: "800m",  label: "OPEN" },
+    rookie: { dist: "400m",  label: "ROOKIE" },
+  };
+  let qrLevel = "pro";
+  let qrRounds = 6;
+
+  // ⚠️ Course Rapide = AMRAP 1' au poids de corps uniquement (pas de matériel)
+  // Les athlètes arrivent essoufflés de la course → on évite charge externe
+  const QUICKRUN_BODYWEIGHT = [
+    { name: "Burpees",                 movement: "Burpees",            detail: "Poitrine au sol + saut debout + clap mains derrière la tête" },
+    { name: "Push Ups",                movement: "Push Ups",           detail: "Pro stricts · Open genoux · Rookie inclinés" },
+    { name: "Air Squats",              movement: "Air Squats",         detail: "Hanches < genoux" },
+    { name: "Jump Squats",             movement: "Jump Squats",        detail: "Réception genoux fléchis" },
+    { name: "Lunges (alternés)",       movement: "Lunges alt.",        detail: "Genou arrière au sol = 1 rep" },
+    { name: "Jumping Lunges",          movement: "Jumping Lunges",     detail: "Genou arrière effleure le sol" },
+    { name: "Mountain Climbers",       movement: "Mountain Climbers",  detail: "Compte = chaque genou × 2" },
+    { name: "Sit Ups",                 movement: "AbMat Sit Ups",      detail: "Toucher le sol derrière la tête puis devant les pieds" },
+    { name: "V-Ups",                   movement: "V-Ups",              detail: "Mains touchent les pieds en haut" },
+    { name: "Hollow Rocks",            movement: "Hollow Rocks",       detail: "Garder bas du dos collé au sol" },
+    { name: "Tuck Jumps",              movement: "Tuck Jumps",         detail: "Genoux à la poitrine" },
+    { name: "Squat Thrusts",           movement: "Squat Thrusts",      detail: "Burpee sans pompe ni saut" },
+    { name: "Plank Up-Downs",          movement: "Plank Up-Downs",     detail: "Coude → main alterné" },
+    { name: "Bicycle Crunches",        movement: "Bicycle Crunches",   detail: "Coude opposé au genou" },
+    { name: "Star Jumps",              movement: "Star Jumps",         detail: "Bras + jambes écartés en l'air" },
+    { name: "Bear Crawl",              movement: "Bear Crawl",         detail: "Distance / mètres parcourus" },
+    { name: "Skater Jumps",            movement: "Skater Jumps",       detail: "Saut latéral d'un pied sur l'autre" },
+    { name: "Broad Jumps",             movement: "Broad Jumps",        detail: "Saut en longueur 2 pieds" },
+    { name: "Inchworm + Push Up",      movement: "Inchworm + Push Up", detail: "Marche des mains + 1 pompe" },
+    { name: "Split Squat Jumps",       movement: "Split Squat Jumps",  detail: "Alternance jambes en l'air" },
+  ];
+
+  document.querySelectorAll(".sub-btn").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(".sub-btn").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      qrLevel = b.dataset.level;
+      updateQuickrunInfo();
+    };
+  });
+  document.querySelectorAll(".sub-btn-r").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(".sub-btn-r").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      qrRounds = parseInt(b.dataset.rounds, 10);
+      updateQuickrunInfo();
+    };
+  });
+
+  function updateQuickrunInfo() {
+    if (currentMode !== "quickrun") return;
+    const lvl = QUICKRUN_LEVELS[qrLevel];
+    // 1 round = 4' (course) + 30'' (rest 1) + 1' (AMRAP) + 30'' (rest 2) = 6'
+    const totalMin = qrRounds * 6;
+    document.getElementById("fmt").textContent = `${lvl.dist} · 4' + 30'' + AMRAP 1' + 30''`;
+    document.getElementById("dur").textContent = `${totalMin}'`;
+    document.getElementById("grp").textContent = "3";  // Course Rapide = 3 athlètes/station strict
+  }
+
+  // Hook : quand on switche en mode quickrun(-manual), afficher les sub-bars + adapter
+  const originalModeHandler = document.querySelectorAll(".mode-btn");
+  originalModeHandler.forEach(b => {
+    b.addEventListener("click", () => {
+      const mode = b.dataset.mode;
+      const isQuickrun = mode === "quickrun";
+      const isManual   = mode === "quickrun-manual";
+
+      document.getElementById("quickrunOpts").style.display       = isQuickrun ? "flex" : "none";
+      document.getElementById("quickrunManualOpts").style.display = isManual   ? "flex" : "none";
+      document.getElementById("stations").style.display = "grid";
+
+      const mainBtn  = document.getElementById("mainBtn");
+      const launchBtn = document.getElementById("launchTimerBtn");
+      if (launchBtn) launchBtn.style.display = "none";
+
+      if (isQuickrun) {
+        mainBtn.style.display = "inline-flex";
+        mainBtn.textContent = "🎲 Tirer la séance";
+        mainBtn.onclick = previewQuickrun;
+        updateQuickrunInfo();
+        previewQuickrunReset();
+      } else if (isManual) {
+        // En mode manuel : pas besoin de "tirer", on cache le bouton tirage
+        mainBtn.style.display = "none";
+        updateManualQuickrunInfo();
+        setupManualQuickrun();   // génère les 6 cartes avec dropdowns
+      } else {
+        mainBtn.style.display = "inline-flex";
+        mainBtn.textContent = "🎲 Tirer au sort";
+        mainBtn.onclick = draw;
+        reset();
+      }
+    });
+  });
+
+  // Handler pour les boutons de niveau du mode MANUEL
+  document.querySelectorAll(".sub-btn-m").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(".sub-btn-m").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      qrLevel = b.dataset.level;
+      updateManualQuickrunInfo();
+    };
+  });
+
+  function updateManualQuickrunInfo() {
+    if (currentMode !== "quickrun-manual") return;
+    const lvl = QUICKRUN_LEVELS[qrLevel];
+    const totalMin = 6 * 6;  // 6 rounds × 6 min = 36 min
+    document.getElementById("fmt").textContent = `${lvl.dist} · 4' + 30'' + AMRAP 1' + 30''`;
+    document.getElementById("dur").textContent = `${totalMin}'`;
+    document.getElementById("grp").textContent = "3";
+  }
+
+  // === MODE MANUEL : 6 cartes AMRAP avec dropdown + 6 cartes Course alternées ===
+  let manualSelections = new Array(6).fill(null);  // exercice choisi pour chaque AMRAP
+
+  function setupManualQuickrun() {
+    manualSelections = new Array(6).fill(null);
+    const grid = document.getElementById("stations");
+    grid.innerHTML = "";
+    const lvl = QUICKRUN_LEVELS[qrLevel];
+    const pool = buildManualPool();
+    setGridCols(12);  // 6 rounds × 2 (course + amrap)
+
+    for (let r = 0; r < 6; r++) {
+      // Carte COURSE (fixe)
+      const cCourse = document.createElement("div");
+      cCourse.className = "station-card drawn run-card";
+      cCourse.innerHTML = `
+        <div class="station-number">Course ${r+1}</div>
+        <div class="station-name">${lvl.dist} Run / Shuttle</div>
+        <div class="station-detail">4' max · ${lvl.label}</div>`;
+      grid.appendChild(cCourse);
+
+      // Carte AMRAP (avec dropdown)
+      const cAmrap = document.createElement("div");
+      cAmrap.className = "station-card drawn manual";
+      let optsHtml = '<option value="">— Choisir un exercice —</option>';
+      pool.forEach(grp => {
+        optsHtml += `<optgroup label="${grp.group}">`;
+        grp.items.forEach((item, idx) => {
+          optsHtml += `<option value="${grp.group}|${idx}">${item.movement || item.name}</option>`;
+        });
+        optsHtml += `</optgroup>`;
+      });
+      cAmrap.innerHTML = `
+        <div class="station-number">AMRAP 1' · Round ${r+1}</div>
+        <select class="amrap-select" data-round="${r}">${optsHtml}</select>
+        <div class="station-detail" id="manualDetail-${r}">Sélectionnez un exercice</div>`;
+      grid.appendChild(cAmrap);
+    }
+
+    // Brancher les selects
+    grid.querySelectorAll(".amrap-select").forEach(sel => {
+      sel.onchange = (e) => onManualSelectChange(e.target);
+    });
+
+    refreshLaunchBtnManual();
+  }
+
+  function onManualSelectChange(selEl) {
+    const round = parseInt(selEl.dataset.round, 10);
+    const val = selEl.value;
+    const detailEl = document.getElementById(`manualDetail-${round}`);
+    if (!val) {
+      manualSelections[round] = null;
+      detailEl.textContent = "Sélectionnez un exercice";
+      refreshLaunchBtnManual();
+      return;
+    }
+    const [grpName, idx] = val.split("|");
+    const pool = buildManualPool();
+    const grp = pool.find(g => g.group === grpName);
+    const item = grp.items[parseInt(idx, 10)];
+    manualSelections[round] = item;
+    detailEl.textContent = item.detail;
+    refreshLaunchBtnManual();
+  }
+
+  function refreshLaunchBtnManual() {
+    const launchBtn = document.getElementById("launchTimerBtn");
+    if (!launchBtn) return;
+    const allChosen = manualSelections.every(x => x !== null);
+    launchBtn.style.display = "inline-flex";
+    launchBtn.disabled = !allChosen;
+    launchBtn.style.opacity = allChosen ? "1" : "0.45";
+    launchBtn.style.cursor = allChosen ? "pointer" : "not-allowed";
+    launchBtn.textContent = allChosen
+      ? "🚀 Lancer le timer"
+      : `🚀 Lancer le timer (choisir ${manualSelections.filter(x=>!x).length} exo restant${manualSelections.filter(x=>!x).length>1?"s":""})`;
+    launchBtn.onclick = allChosen ? launchManualQuickrunTimer : null;
+  }
+
+  function launchManualQuickrunTimer() {
+    initAudio();
+    const lvl = QUICKRUN_LEVELS[qrLevel];
+    timerState = {
+      rounds: 6,
+      currentRound: 1,
+      phase: "ready",
+      remaining: 0,
+      stations: manualSelections.slice(),  // exercices choisis par l'utilisateur
+      level: lvl,
+      playing: false,
+    };
+    document.getElementById("timerOverlay").classList.add("show");
+    setPhase("ready");
+  }
+
+  // État : tirage en attente de lancement du timer
+  let qrPreview = null;  // { stations: [...], level: {...} }
+
+  function previewQuickrunReset() {
+    // Affiche des cartes vides (?) selon nombre de rounds
+    const grid = document.getElementById("stations");
+    grid.innerHTML = "";
+    const total = qrRounds * 2;  // course + AMRAP par round
+    setGridCols(total);
+    for (let i = 0; i < total; i++) {
+      const isRun = i % 2 === 0;
+      const c = document.createElement("div");
+      c.className = "station-card" + (isRun ? " run-card" : "");
+      c.innerHTML = '<div class="question">?</div>';
+      grid.appendChild(c);
+    }
+    qrPreview = null;
+    const launchBtn = document.getElementById("launchTimerBtn");
+    if (launchBtn) launchBtn.style.display = "none";
+  }
+
+  function previewQuickrun() {
+    // Étape 1 : tirage des stations et affichage en aperçu (cartes habituelles)
+    const lvl = QUICKRUN_LEVELS[qrLevel];
+    // Tirage sans répétition idéal dans le pool poids de corps
+    const stations = shuffle(QUICKRUN_BODYWEIGHT).slice(0, qrRounds);
+    while (stations.length < qrRounds) {
+      stations.push(QUICKRUN_BODYWEIGHT[Math.floor(Math.random() * QUICKRUN_BODYWEIGHT.length)]);
+    }
+    qrPreview = { stations, level: lvl };
+
+    const grid = document.getElementById("stations");
+    grid.innerHTML = "";
+    const total = qrRounds * 2;
+    setGridCols(total);
+
+    let sIdx = 0;
+    for (let i = 0; i < total; i++) {
+      const isRun = i % 2 === 0;
+      const c = document.createElement("div");
+      c.className = "station-card flip" + (isRun ? " run-card" : "");
+      const isCourse = isRun;
+      const content = isCourse
+        ? { name: `${lvl.dist} Run / Shuttle`, detail: `4' max · ${lvl.label}` }
+        : stations[sIdx++];
+      const labelType = isCourse ? "Course" : "AMRAP 1'";
+      setTimeout(() => {
+        c.classList.add("drawn");
+        c.innerHTML = `
+          <div class="station-number">${labelType} ${Math.floor(i/2)+1}</div>
+          <div class="station-name">${content.name}</div>
+          <div class="station-detail">${content.detail}</div>`;
+      }, i * 100);
+      grid.appendChild(c);
+    }
+
+    // Étape 2 : afficher le bouton "Lancer le timer"
+    const launchBtn = document.getElementById("launchTimerBtn");
+    if (launchBtn) {
+      launchBtn.style.display = "inline-flex";
+      launchBtn.onclick = () => launchQuickrunTimer();
+    }
+  }
+
+  function launchQuickrunTimer() {
+    if (!qrPreview) return;
+    timerState = {
+      rounds: qrRounds,
+      currentRound: 1,
+      phase: "ready",
+      remaining: 0,
+      stations: qrPreview.stations,
+      level: qrPreview.level,
+      playing: false,
+    };
+    // Débloquer l'audio iOS (geste utilisateur)
+    initAudio();
+    document.getElementById("timerOverlay").classList.add("show");
+    setPhase("ready");
+  }
+
+  // ============================================================
+  // TIMER ENGINE
+  // ============================================================
+  let timerState = null;
+  let timerInterval = null;
+  let audioCtx = null;
+
+  // ============================================================
+  // === AUDIO STRIDENT (iPad/iPhone friendly) =================
+  // ============================================================
+  // Combine 2 approches pour contourner les pièges iOS Safari :
+  //  1) WebAudio API (oscillateur) : son précis, type "square" = strident
+  //  2) HTMLAudioElement (data-URI WAV) : fallback joué EN PARALLÈLE
+  //     car plus robuste sur certains états iOS
+  //
+  // ⚠️ ATTENTION iPad : si AUCUN son malgré PLAY, vérifier dans l'ordre :
+  //  A. Interrupteur SILENCIEUX sur le côté de l'iPad (orange = muet)
+  //  B. Volume "Sonnerie" ET "Médias" → augmenter LE BOUTON physique
+  //  C. Réglages > Sons → Volume sonnerie au max
+  //  D. Sortir/revenir sur l'onglet Safari (relance audio policy)
+  // ============================================================
+  let audioReady = false;
+
+  // Pré-génère un WAV 200 ms 2200 Hz square en base64 → fallback HTMLAudio
+  function makeBeepWav(freq, durationMs, gain) {
+    const sampleRate = 44100;
+    const numSamples = Math.floor(sampleRate * durationMs / 1000);
+    const buffer = new ArrayBuffer(44 + numSamples * 2);
+    const view = new DataView(buffer);
+    // WAV header
+    const writeStr = (off, s) => { for (let i=0; i<s.length; i++) view.setUint8(off+i, s.charCodeAt(i)); };
+    writeStr(0, "RIFF");
+    view.setUint32(4, 36 + numSamples * 2, true);
+    writeStr(8, "WAVE"); writeStr(12, "fmt "); view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+    writeStr(36, "data"); view.setUint32(40, numSamples * 2, true);
+    // Square wave samples (très strident)
+    const period = sampleRate / freq;
+    for (let i = 0; i < numSamples; i++) {
+      // Envelope : décroissance pour éviter le click final
+      const env = i < numSamples * 0.85 ? 1 : (numSamples - i) / (numSamples * 0.15);
+      const sample = (Math.floor(i / (period/2)) % 2 === 0 ? 1 : -1) * gain * env;
+      view.setInt16(44 + i * 2, sample * 32767, true);
+    }
+    // Convertir en base64
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    return "data:audio/wav;base64," + btoa(binary);
+  }
+
+  // Pré-générer les sons une fois (au load) — fallback HTMLAudio
+  let tickAudio, bigAudio;
+  function preloadAudios() {
+    try {
+      tickAudio = new Audio(makeBeepWav(1800, 120, 0.7));
+      bigAudio  = new Audio(makeBeepWav(2200, 600, 0.9));
+      tickAudio.preload = "auto"; bigAudio.preload = "auto";
+      // iOS : playsinline pour rester en background
+      tickAudio.setAttribute("playsinline", ""); bigAudio.setAttribute("playsinline", "");
+    } catch (e) { console.warn("Preload audio failed", e); }
+  }
+  preloadAudios();
+
+  function initAudio() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      // "Unlock" iOS : jouer un beep ULTRA court silencieux dès le 1er geste
+      if (!audioReady) {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        o.start(); o.stop(audioCtx.currentTime + 0.01);
+        // Idem pour HTMLAudio : précharge silencieusement
+        if (tickAudio) { tickAudio.volume = 0; tickAudio.play().then(()=>{ tickAudio.pause(); tickAudio.currentTime=0; tickAudio.volume=1; }).catch(()=>{}); }
+        if (bigAudio)  { bigAudio.volume = 0;  bigAudio.play().then(()=>{ bigAudio.pause();  bigAudio.currentTime=0;  bigAudio.volume=1;  }).catch(()=>{}); }
+        audioReady = true;
+        console.log("🔊 Audio armé (WebAudio + HTMLAudio)");
+      }
+    } catch (e) { console.warn("initAudio", e); }
+  }
+
+  // Init audio dès le PREMIER clic n'importe où dans le document
+  // (iOS bloque tout audio tant qu'il n'y a pas eu un geste utilisateur)
+  document.addEventListener("click",      initAudio, { once: false });
+  document.addEventListener("touchstart", initAudio, { once: false });
+
+  function beep(freq = 1800, duration = 200, gain = 0.7) {
+    // Voie 1 : WebAudio (précis)
+    try {
+      initAudio();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value = freq;
+      o.type = "square";
+      g.gain.setValueAtTime(gain, audioCtx.currentTime);
+      g.gain.setValueAtTime(gain, audioCtx.currentTime + (duration - 30)/1000);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration/1000);
+      o.start();
+      o.stop(audioCtx.currentTime + duration/1000);
+    } catch (e) { console.warn("beep WebAudio", e); }
+  }
+
+  // Voie 2 : HTMLAudio (fallback) — joue le WAV préchargé
+  function playHtmlAudio(el) {
+    if (!el) return;
+    try {
+      el.pause(); el.currentTime = 0;
+      const p = el.play();
+      if (p && p.catch) p.catch(err => console.warn("HTMLAudio play", err));
+    } catch (e) { console.warn("HTMLAudio", e); }
+  }
+
+  // Tick 3-2-1 : 1800 Hz 120 ms
+  function tickBeep() {
+    beep(1800, 120, 0.7);
+    playHtmlAudio(tickAudio);
+  }
+  // Bip fin de section : 2200 Hz 600 ms
+  function bigBeep()  {
+    beep(2200, 600, 0.9);
+    playHtmlAudio(bigAudio);
+  }
+  // Triple bip final
+  function tripleBeep() {
+    bigBeep();
+    setTimeout(() => bigBeep(), 350);
+    setTimeout(() => bigBeep(), 700);
+  }
+
+  // Bouton TEST SON (exposé globalement pour le HTML)
+  window.testSound = function() {
+    initAudio();
+    bigBeep();
+    setTimeout(() => tickBeep(), 600);
+    setTimeout(() => tickBeep(), 800);
+    setTimeout(() => tickBeep(), 1000);
+    setTimeout(() => bigBeep(), 1200);
+  };
+
+  // ↳ Remplacé par previewQuickrun() + launchQuickrunTimer() ci-dessus
+  //   (workflow en 2 étapes : aperçu cartes → bouton Lancer le timer)
+
+  function closeTimer() {
+    pauseTimer();
+    document.getElementById("timerOverlay").classList.remove("show");
+    timerState = null;
+  }
+
+  function setPhase(phase) {
+    if (!timerState) return;
+    timerState.phase = phase;
+    const phaseEl = document.getElementById("timerPhase");
+    const stationEl = document.getElementById("timerStation");
+    phaseEl.classList.remove("course","rest","amrap","done");
+    if (phase === "ready") {
+      phaseEl.textContent = "PRÊT ?";
+      phaseEl.classList.add("course");
+      stationEl.innerHTML = `Niveau ${timerState.level.label} · ${timerState.rounds} rounds`;
+      timerState.remaining = 5; // 5 sec de countdown initial
+    } else if (phase === "course") {
+      phaseEl.textContent = "COURSE";
+      phaseEl.classList.add("course");
+      stationEl.innerHTML = `${timerState.level.dist} Run / Shuttle`;
+      timerState.remaining = 4 * 60;
+    } else if (phase === "rest") {
+      phaseEl.textContent = "REST";
+      phaseEl.classList.add("rest");
+      // ✨ Affiche l'AMRAP qui suit pour que les athlètes se préparent
+      const stNext = timerState.stations[timerState.currentRound - 1];
+      stationEl.innerHTML = `À suivre · AMRAP 1'<br><span style="color:var(--jlh-yellow); font-size:0.85em;">${stNext.movement}</span><div class="timer-station-detail">${stNext.detail}</div>`;
+      timerState.remaining = 30;
+    } else if (phase === "amrap") {
+      phaseEl.textContent = "AMRAP";
+      phaseEl.classList.add("amrap");
+      const st = timerState.stations[timerState.currentRound - 1];
+      // Affiche uniquement le mouvement (sans distance/quantité)
+      // car en AMRAP les athlètes font autant de reps que possible
+      stationEl.innerHTML = `${st.movement}<div class="timer-station-detail">${st.detail}</div>`;
+      timerState.remaining = 60;
+    } else if (phase === "rest2") {
+      phaseEl.textContent = "REST";
+      phaseEl.classList.add("rest");
+      // Si dernier round → fin, sinon → annonce la prochaine course
+      const isLast = timerState.currentRound >= timerState.rounds;
+      if (isLast) {
+        stationEl.innerHTML = `Bientôt terminé 💪<div class="timer-station-detail">Dernière récupération</div>`;
+      } else {
+        stationEl.innerHTML = `À suivre · COURSE<br><span style="color:var(--jlh-yellow); font-size:0.85em;">${timerState.level.dist} Run / Shuttle</span><div class="timer-station-detail">Round ${timerState.currentRound + 1} / ${timerState.rounds}</div>`;
+      }
+      timerState.remaining = 30;
+    } else if (phase === "done") {
+      phaseEl.textContent = "TERMINÉ !";
+      phaseEl.classList.add("done");
+      stationEl.innerHTML = `Bravo 💪`;
+      timerState.remaining = 0;
+      timerState.playing = false;
+      clearInterval(timerInterval);
+      document.getElementById("timerPlayBtn").textContent = "▶ START";
+      tripleBeep();  // 3 bips stridents de fin de séance
+    }
+    document.getElementById("timerRoundInfo").textContent = `Round ${timerState.currentRound} / ${timerState.rounds}`;
+    renderCountdown();
+  }
+
+  function renderCountdown() {
+    if (!timerState) return;
+    const r = timerState.remaining;
+    const mm = Math.floor(r / 60);
+    const ss = Math.floor(r % 60);
+    const el = document.getElementById("timerCountdown");
+    el.textContent = mm > 0 ? `${mm}:${String(ss).padStart(2,"0")}` : `${ss}`;
+    el.classList.remove("warning","danger");
+    if (r <= 3 && r > 0) el.classList.add("danger");
+    else if (r <= 10) el.classList.add("warning");
+  }
+
+  function togglePlay() {
+    if (!timerState) return;
+    if (timerState.playing) pauseTimer();
+    else playTimer();
+  }
+  function playTimer() {
+    if (!timerState) return;
+    initAudio();  // débloque audio iOS sur PLAY (geste utilisateur)
+    timerState.playing = true;
+    document.getElementById("timerPlayBtn").textContent = "⏸ PAUSE";
+    if (timerState.phase === "ready" && timerState.remaining === 5) bigBeep();
+    timerInterval = setInterval(tick, 1000);
+  }
+  function pauseTimer() {
+    if (!timerState) return;
+    timerState.playing = false;
+    document.getElementById("timerPlayBtn").textContent = "▶ START";
+    clearInterval(timerInterval);
+  }
+  function tick() {
+    if (!timerState || !timerState.playing) return;
+    timerState.remaining--;
+    if (timerState.remaining > 0 && timerState.remaining <= 3) tickBeep();
+    renderCountdown();
+    if (timerState.remaining <= 0) nextPhase();
+  }
+  function nextPhase() {
+    if (!timerState) return;
+    bigBeep();
+    if (timerState.phase === "ready")        { setPhase("course"); }
+    else if (timerState.phase === "course")  { setPhase("rest"); }
+    else if (timerState.phase === "rest")    { setPhase("amrap"); }
+    else if (timerState.phase === "amrap")   { setPhase("rest2"); }
+    else if (timerState.phase === "rest2")   {
+      if (timerState.currentRound >= timerState.rounds) { setPhase("done"); return; }
+      timerState.currentRound++;
+      setPhase("course");
+    }
+  }
+  function skipPhase() {
+    if (!timerState) return;
+    timerState.remaining = 0;
+    nextPhase();
+  }
+  function resetTimer() {
+    if (!timerState) return;
+    pauseTimer();
+    timerState.currentRound = 1;
+    setPhase("ready");
+  }
+</script>
+</body>
+</html>
